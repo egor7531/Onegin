@@ -9,13 +9,11 @@ size_t getFileSize(FILE * fp);
 int main()
 {
 
-    FILE * fp = fopen("Onegin.txt","r");
+    FILE * fp = fopen("Eugene Onegin.txt","r");
 
     assert(fp != NULL);
 
     size_t fileSize = getFileSize(fp) + 1;
-
-    printf("%d\n",fileSize);
 
     char * buf = (char *)calloc(fileSize, sizeof(char));
 
@@ -33,31 +31,26 @@ int main()
 
     fclose(fp);
 
-    puts(buf);
+    size_t line = 1;
 
-    char * text[10000] = {};
+    char ** text = (char **)calloc(line*strlen(buf), sizeof(char*));
 
     text[0] = buf;
 
-    size_t line = 1;
-
     for( size_t i = 0; i < fileSize; i++)
     {
+
         if(buf[i] == '\n')
         {
-            printf("\n");
             buf[i] = '\0';
+            text = (char **)realloc(text, line*sizeof(char*) + i*sizeof(char));
             text[line++] = &buf[i+1];
         }
 
     }
 
-    printf("<%d>\n", line);
-
-    for(size_t i = 0; i < line; i++)
-        printf("%p\n",text[i]);
-
-
+    free(buf);
+    free(text);
 
     return 0;
 }
