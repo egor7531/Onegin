@@ -4,9 +4,9 @@
 #include <assert.h>
 #include <sys/stat.h>
 
-size_t getFileSize(FILE * fp);
+size_t getFileSize(FILE * fin);
 
-void fileReadCheckAndWrite(char * buf, FILE * fp, const size_t fileSize);
+void fileReadCheckAndWrite(char * buf, FILE * fin, const size_t fileSize);
 
 size_t getCountOfLine(char * buf, const size_t fileSize);
 
@@ -15,17 +15,17 @@ void fillingArrayOfPointers(char ** text, char * buf, const size_t fileSize);
 int main()
 {
 
-    FILE * fp = fopen("Eugene Onegin.txt","rb");
+    FILE * fin = fopen("Eugene Onegin.txt","rb");   // почему чтение двоичного файла лучше чем .txt ?
 
-    assert(fp != NULL);
+    assert(fin != NULL);
 
-    size_t fileSize = getFileSize(fp);
+    size_t fileSize = getFileSize(fin);
 
     char * buf = (char *)calloc(fileSize, sizeof(char));
 
     assert(buf != NULL);
 
-    fileReadCheckAndWrite(buf, fp, fileSize);
+    fileReadCheckAndWrite(buf, fin, fileSize);
 
     size_t nLine = getCountOfLine(buf, fileSize);
 
@@ -36,8 +36,10 @@ int main()
     fillingArrayOfPointers(text, buf, fileSize);
 
 
+    FILE * fout = fopen("SortedFile.txt", "wb");
+
     for(size_t i = 0; i < nLine; i++)
-        printf("%s\n", text[i]);
+        fputs(text[i], fout);
 
 
     free(buf);
@@ -57,12 +59,12 @@ size_t getFileSize(FILE * fp)
     return st.st_size;
 }
 
-void fileReadCheckAndWrite(char * buf, FILE * fp, const size_t fileSize)
+void fileReadCheckAndWrite(char * buf, FILE * fin, const size_t fileSize)
 {
 
-    if(fread(buf, sizeof(char), fileSize, fp) != fileSize)
+    if(fread(buf, sizeof(char), fileSize, fin) != fileSize)
     {
-        if(feof(fp))
+        if(feof(fin))
             printf("Premature end of file\n");
 
         else
@@ -70,7 +72,7 @@ void fileReadCheckAndWrite(char * buf, FILE * fp, const size_t fileSize)
 
     }
 
-    fclose(fp);
+    fclose(fin);
 
 }
 

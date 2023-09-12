@@ -14,12 +14,12 @@ void fillingArrayOfPointers(char ** text, char * buf, const size_t fileSize);
 
 int main()
 {
-    // "r", "rb"
-    FILE * fp = fopen("Eugene Onegin.txt","r");
+
+    FILE * fp = fopen("Eugene Onegin.txt","rb");
 
     assert(fp != NULL);
 
-    size_t fileSize = getFileSize(fp) + 1;
+    size_t fileSize = getFileSize(fp);
 
     char * buf = (char *)calloc(fileSize, sizeof(char));
 
@@ -29,20 +29,19 @@ int main()
 
     size_t nLine = getCountOfLine(buf, fileSize);
 
-    printf("%d", nLine);
-
     char ** text = (char **)calloc(nLine, sizeof(char*));
 
     assert(text != NULL);
 
     fillingArrayOfPointers(text, buf, fileSize);
 
-    for(size_t i = 0; i < nLine; i++)
-        printf("%s\n", text[i]);
+
+    FILE * 
+
 
     free(buf);
-
     free(text);
+
 
     return 0;
 }
@@ -74,7 +73,7 @@ void fileReadCheckAndWrite(char * buf, FILE * fp, const size_t fileSize)
 
 }
 
-size_t getCountOfLine(char * buf, const size_t fileSize)
+size_t  getCountOfLine(char * buf, const size_t fileSize)
 {
     size_t nLine = 1;
 
