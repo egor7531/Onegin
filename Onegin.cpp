@@ -4,6 +4,8 @@
 #include <assert.h>
 #include <sys/stat.h>
 
+#include "Sort.h"
+
 size_t getFileSize(FILE * fin);
 
 void fileReadCheckAndWrite(char * buf, FILE * fin, const size_t fileSize);
@@ -39,12 +41,17 @@ int main()
     FILE * fout = fopen("SortedFile.txt", "wb");
 
     for(size_t i = 0; i < nLine; i++)
-        fputs(text[i], fout);
+        //fputs(text[i], fout);
 
+    bubbleSort(text, nLine);
+
+    for(size_t i = 0; i < nLine; i++)
+       fputs(text[i], fout);
+
+    fclose(fout);
 
     free(buf);
     free(text);
-
 
     return 0;
 }
