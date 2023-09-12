@@ -8,16 +8,18 @@ size_t getFileSize(FILE * fp);
 
 void fileReadCheckAndWrite(char * buf, FILE * fp, const size_t fileSize);
 
-size_t fillingArrayOfPointers(char ** text, char * buf, const size_t fileSize);
+size_t getCountOfLine(char * buf, const size_t fileSize);
+
+void fillingArrayOfPointers(char ** text, char * buf, const size_t fileSize);
 
 int main()
 {
 
-    FILE * fp = fopen("Eugene Onegin.txt","r");
+    FILE * fp = fopen("Eugene Onegin.txt","rb");
 
     assert(fp != NULL);
 
-    size_t fileSize = getFileSize(fp) + 1;
+    size_t fileSize = getFileSize(fp);
 
     char * buf = (char *)calloc(fileSize, sizeof(char));
 
@@ -25,21 +27,22 @@ int main()
 
     fileReadCheckAndWrite(buf, fp, fileSize);
 
-    fclose(fp);
+    size_t nLine = getCountOfLine(buf, fileSize);
 
-    char ** text = (char **)calloc(sizeof(char), sizeof(char*));
+    char ** text = (char **)calloc(nLine, sizeof(char*));
 
     assert(text != NULL);
 
-    size_t line = fillingArrayOfPointers(text, buf, fileSize);
+    fillingArrayOfPointers(text, buf, fileSize);
 
-    printf("<%d>",line);
+
+    for(size_t i = 0; i < nLine; i++)
+        printf("%s\n", text[i]);
+
 
     free(buf);
-
-    printf("%s\n",text[0]);
-
     free(text);
+
 
     return 0;
 }
@@ -67,27 +70,40 @@ void fileReadCheckAndWrite(char * buf, FILE * fp, const size_t fileSize)
 
     }
 
+    fclose(fp);
+
 }
 
-size_t fillingArrayOfPointers(char ** text, char * buf, const size_t fileSize)
+size_t  getCountOfLine(char * buf, const size_t fileSize)
+{
+    size_t nLine = 1;
+
+    for(size_t i = 0; i < fileSize; i++)
+    {
+
+        if(buf[i] == '\n')
+            nLine++;
+
+    }
+
+    return nLine;
+
+}
+
+void fillingArrayOfPointers(char ** text, char * buf, const size_t fileSize)
 {
     size_t line = 1;
 
     text[0] = buf;
 
-    for( size_t i = 0; i < fileSize; i++)
+    for(size_t i = 0; i < fileSize; i++)
     {
         if(buf[i] == '\n')
         {
             buf[i] = '\0';
-            text = (char **)realloc(text, line*sizeof(char*)+ i*sizeof(char));
             text[line++] = &buf[i+1];
         }
+
     }
-
-    for(size_t i = 0; i < line; i++)
-        printf("%s\n",text[i]);
-
-    return line;
 
 }
