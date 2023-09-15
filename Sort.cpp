@@ -1,39 +1,29 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
-#include <algorithm>
+#include <stdlib.h>
+#include <time.h>
 
 #include "Sort.h"
 
+void swaps(char ** a, char ** b);
 
-void swaps(char * a, char * b)
+
+int Partition(char ** text, int left, int right, const int dataSize);
+
+
+void swaps(char **a, char **b)
 {
-    char * tmp = a;
-    a = b;
-    b = tmp;
+    assert(a != NULL);
+    assert(b != NULL);
+
+    char * tmp = *a;
+    *a = *b;
+    *b = tmp;
 
 }
 
-bool stringComparison(const char * str1, const char * str2)
-{
-
-    assert(str1 != NULL);
-    assert(str2 != NULL);
-
-
-    for(size_t i = 0; str1[i] != '\0' && str2[i] != '\0'; i++)
-    {
-        if(str1[i] - str2[i] < 0)
-            return 1;
-
-        else if(str1[i] - str2[i] > 0)
-            return 2;
-
-    }
-
-    return 0;
-
-}
+//Bubble Sort
 
 void bubbleSort(char ** text, const size_t nLine)
 {
@@ -54,7 +44,7 @@ void bubbleSort(char ** text, const size_t nLine)
 
             if(strcmp(text[i], text[i+1]) > 0)
             {
-                std::swap(text[i], text[i+1]);
+                swaps(&text[i], &text[i+1]);
 
                 nSwaps = true;
             }
@@ -65,5 +55,65 @@ void bubbleSort(char ** text, const size_t nLine)
             break;
 
     }
+
+}
+
+//Qsort
+
+void QSort(char ** text, int left, int right, const int nLine)
+{
+
+    assert(text != NULL);
+
+    assert(0 <= right && right < nLine);
+    assert(0 <= left && left < nLine);
+
+    int mid = Partition(text, left, right, nLine);
+
+    if(mid - 1 > left)
+
+        QSort(text, left, mid - 1, nLine);
+
+
+    if(mid + 1 < right)
+
+        QSort(text, mid + 1, right, nLine);
+
+}
+
+
+int Partition(char ** text, int left, int right, const int nLine)
+{
+
+    assert(text != NULL);
+
+    srand(time(NULL));
+
+    int mid = left + rand() % (right - left + 1);
+
+    while(left < right)
+    {
+
+        assert(0 <= right && right < nLine);
+        assert(0 <= left && left < nLine);
+
+        while(strcmp(text[left], text[mid]) < 0 && left != mid)
+            left++;
+
+        while(strcmp(text[right], text[mid]) >= 0 && mid != right)
+            right--;
+
+        if(mid == right)
+            mid = left;
+
+        else if(mid == left)
+            mid = right;
+
+        swaps(&text[left], &text[right]);
+
+
+    }
+
+    return mid;
 
 }

@@ -14,6 +14,9 @@ size_t getCountOfLine(char * buf, const size_t fileSize);
 
 void fillingArrayOfPointers(char ** text, char * buf, const size_t fileSize);
 
+void delateEmtyString(char ** text);
+
+
 int main()
 {
 
@@ -31,6 +34,7 @@ int main()
 
     size_t nLine = getCountOfLine(buf, fileSize);
 
+
     char ** text = (char **)calloc(nLine, sizeof(char*));
 
     assert(text != NULL);
@@ -40,13 +44,23 @@ int main()
 
     FILE * fout = fopen("SortedFile.txt", "wb");
 
-    for(size_t i = 0; i < nLine; i++)
-        //fputs(text[i], fout);
-
-    bubbleSort(text, nLine);
+    QSort(text, 0, nLine - 1, nLine);
 
     for(size_t i = 0; i < nLine; i++)
-       fputs(text[i], fout);
+    {
+        if((int)text[i][0] > 13)
+            fputs(text[i], fout);
+    }
+
+    /*for(size_t i = 0; i < nLine; i++)
+    {
+        size_t j = 0;
+        for(j = 0; text[i][j] != '\0'; j++)
+            printf("%d ", text[i][j]);
+
+        printf("%d ", text[i][j]);
+        printf("\n");
+    }*/
 
     fclose(fout);
 
@@ -83,7 +97,7 @@ void fileReadCheckAndWrite(char * buf, FILE * fin, const size_t fileSize)
 
 }
 
-size_t  getCountOfLine(char * buf, const size_t fileSize)
+size_t getCountOfLine(char * buf, const size_t fileSize)
 {
     size_t nLine = 1;
 
@@ -116,3 +130,19 @@ void fillingArrayOfPointers(char ** text, char * buf, const size_t fileSize)
     }
 
 }
+
+/*void delateEmtyString(char ** text)
+{
+    for(size_t i = 0; i < nLine; i++)
+    {
+        for(size_t j = 0; text[i][j] != '\0'; j++)
+          //  printf("%d ", text[i][j]);
+
+       // printf("\n");
+    }
+
+
+
+} */
+
+
