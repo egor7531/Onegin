@@ -1,148 +1,51 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <assert.h>
-#include <sys/stat.h>
 
+#include "File.h"
 #include "Sort.h"
 
-size_t getFileSize(FILE * fin);
-
-void fileReadCheckAndWrite(char * buf, FILE * fin, const size_t fileSize);
-
-size_t getCountOfLine(char * buf, const size_t fileSize);
-
-void fillingArrayOfPointers(char ** text, char * buf, const size_t fileSize);
-
-void delateEmtyString(char ** text);
-
+const char * ifileName = "Eugene Onegin.txt";
+const char * ofileName = "SortedFile.txt";
 
 int main()
 {
+    printf("%d", compareEnd("", "fasdfadf"));
 
-    FILE * fin = fopen("Eugene Onegin.txt","rb");   // почему чтение двоичного файла лучше чем .txt ?
+    FILE * fileInput = fopen(ifileName,"rb");
 
-    assert(fin != NULL);
+    assert(fileInput != NULL);
 
-    size_t fileSize = getFileSize(fin);
+    size_t fileSize = getfileSize(fileInput);
 
     char * buf = (char *)calloc(fileSize, sizeof(char));
 
     assert(buf != NULL);
 
-    fileReadCheckAndWrite(buf, fin, fileSize);
+    fileRead(buf, fileInput, fileSize);
 
-    size_t nLine = getCountOfLine(buf, fileSize);
+    fclose(fileInput);
 
+    size_t nLine = getCountLine(buf, fileSize);
 
     char ** text = (char **)calloc(nLine, sizeof(char*));
 
     assert(text != NULL);
 
-    fillingArrayOfPointers(text, buf, fileSize);
+    writeArrayPointers(text, buf, fileSize);
 
+    FILE * fileOutput = fopen(ofileName, "wb");
 
-    FILE * fout = fopen("SortedFile.txt", "wb");
+    QSort(text, 0, nLine - 1, nLine, compareStart);
 
-    QSort(text, 0, nLine - 1, nLine);
+    outputFile(fileOutput, text, buf, nLine);
 
-    for(size_t i = 0; i < nLine; i++)
-    {
-        if((int)text[i][0] > 13)
-            fputs(text[i], fout);
-    }
-
-    /*for(size_t i = 0; i < nLine; i++)
-    {
-        size_t j = 0;
-        for(j = 0; text[i][j] != '\0'; j++)
-            printf("%d ", text[i][j]);
-
-        printf("%d ", text[i][j]);
-        printf("\n");
-    }*/
-
-    fclose(fout);
-
-    free(buf);
-    free(text);
+    fclose(fileOutput);
 
     return 0;
 }
 
 
-size_t getFileSize(FILE * fp)
-{
-    struct stat st;
 
-    fstat(fileno(fp), &st);
-
-    return st.st_size;
-}
-
-void fileReadCheckAndWrite(char * buf, FILE * fin, const size_t fileSize)
-{
-
-    if(fread(buf, sizeof(char), fileSize, fin) != fileSize)
-    {
-        if(feof(fin))
-            printf("Premature end of file\n");
-
-        else
-            printf("File read error\n");
-
-    }
-
-    fclose(fin);
-
-}
-
-size_t getCountOfLine(char * buf, const size_t fileSize)
-{
-    size_t nLine = 1;
-
-    for(size_t i = 0; i < fileSize; i++)
-    {
-
-        if(buf[i] == '\n')
-            nLine++;
-
-    }
-
-    return nLine;
-
-}
-
-void fillingArrayOfPointers(char ** text, char * buf, const size_t fileSize)
-{
-    size_t line = 1;
-
-    text[0] = buf;
-
-    for(size_t i = 0; i < fileSize; i++)
-    {
-        if(buf[i] == '\n')
-        {
-            buf[i] = '\0';
-            text[line++] = &buf[i+1];
-        }
-
-    }
-
-}
-
-/*void delateEmtyString(char ** text)
-{
-    for(size_t i = 0; i < nLine; i++)
-    {
-        for(size_t j = 0; text[i][j] != '\0'; j++)
-          //  printf("%d ", text[i][j]);
-
-       // printf("\n");
-    }
-
-
-
-} */
 
 

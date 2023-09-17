@@ -3,21 +3,31 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <time.h>
+#include <ctype.h>
 
 #include "Sort.h"
 
-void swaps(char ** a, char ** b);
+char * srtingReverse(const char * str, const size_t strSize)
+{
+    char strRever[strSize] = {};
 
+    size_t j = 0;
 
-int Partition(char ** text, int left, int right, const int dataSize);
+    for(int i = strSize - 1; i >= 0 ; i--)
+    {
+        strRever[j] = str[i];
+        j++;
+    }
 
+    return strRever;
+}
 
-void swaps(char **a, char **b)
+void swapString(char ** const a, char ** const b)
 {
     assert(a != NULL);
     assert(b != NULL);
 
-    char * tmp = *a;
+    char * const tmp = *a;
     *a = *b;
     *b = tmp;
 
@@ -25,7 +35,7 @@ void swaps(char **a, char **b)
 
 //Bubble Sort
 
-void bubbleSort(char ** text, const size_t nLine)
+void bubbleSort(char ** const text, const size_t nLine)
 {
 
     assert(text != NULL);
@@ -34,7 +44,7 @@ void bubbleSort(char ** text, const size_t nLine)
     for(size_t nPass = 0; nPass < nLine - 1; nPass++)
     {
 
-        bool nSwaps = false;
+        bool beSwap = false;
 
         for(size_t i = 0; i < nLine - nPass - 1; i++)
         {
@@ -44,14 +54,14 @@ void bubbleSort(char ** text, const size_t nLine)
 
             if(strcmp(text[i], text[i+1]) > 0)
             {
-                swaps(&text[i], &text[i+1]);
+                swapString(&text[i], &text[i+1]);
 
-                nSwaps = true;
+                beSwap = true;
             }
 
         }
 
-        if(!nSwaps)
+        if(!beSwap)
             break;
 
     }
@@ -60,29 +70,44 @@ void bubbleSort(char ** text, const size_t nLine)
 
 //Qsort
 
-void QSort(char ** text, int left, int right, const int nLine)
+int compareStart(const char * str1, const char * str2)
 {
+    return strcmp(str1, str2);
+}
 
-    assert(text != NULL);
+int compareEnd(const char * str1, const char * str2)
+{
+    size_t i1 = strlen(str1);
+    size_t i2 = strlen(str2);
 
-    assert(0 <= right && right < nLine);
-    assert(0 <= left && left < nLine);
+    while(i1 >= 0 && i2 >= 0)
+    {
+        /*if(!isalpha(str1[i1]))
+        {
+            i1--;
+            continue;
+        }*/
 
-    int mid = Partition(text, left, right, nLine);
+        /*if(!isalpha(str2[i2]))
+        {
+            i2--;
+            continue;
+        } */
 
-    if(mid - 1 > left)
-
-        QSort(text, left, mid - 1, nLine);
-
-
-    if(mid + 1 < right)
-
-        QSort(text, mid + 1, right, nLine);
+        if(str1[i1] != str2[i2])
+        {
+            i1--;
+            i2--;
+            continue;
+        }
+        else
+            return (int)str1[i1] - (int)str2[i2];
+    }
 
 }
 
 
-int Partition(char ** text, int left, int right, const int nLine)
+int Partition(char ** const text, size_t left, size_t right, const size_t nLine, int (* compare)(const char *, const char *))
 {
 
     assert(text != NULL);
@@ -94,13 +119,13 @@ int Partition(char ** text, int left, int right, const int nLine)
     while(left < right)
     {
 
-        assert(0 <= right && right < nLine);
-        assert(0 <= left && left < nLine);
+        assert(right < nLine);
+        assert(left < nLine);
 
-        while(strcmp(text[left], text[mid]) < 0 && left != mid)
+        while(compare(text[left], text[mid]) < 0 && left != mid)
             left++;
 
-        while(strcmp(text[right], text[mid]) >= 0 && mid != right)
+        while(compare(text[right], text[mid]) >= 0 && mid != right)
             right--;
 
         if(mid == right)
@@ -109,11 +134,32 @@ int Partition(char ** text, int left, int right, const int nLine)
         else if(mid == left)
             mid = right;
 
-        swaps(&text[left], &text[right]);
-
+        swapString(&text[left], &text[right]);
 
     }
 
     return mid;
 
 }
+
+void QSort(char ** const text, const size_t left,const size_t right, const size_t nLine, int (* compare)(const char *, const char *))
+{
+
+    assert(text != NULL);
+
+    assert(right < nLine);
+    assert(left < nLine);
+
+    int mid = Partition(text, left, right, nLine, compare);
+
+    if(mid - 1 > left)
+
+        QSort(text, left, mid - 1, nLine, compare);
+
+
+    if(mid + 1 < right)
+
+        QSort(text, mid + 1, right, nLine, compare);
+
+}
+
