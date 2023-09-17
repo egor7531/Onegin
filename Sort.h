@@ -1,6 +1,8 @@
 #ifndef SORT_H_INCLUDED
 #define SORT_H_INCLUDED
 
+char * srtingReverse(const char * str);
+
 int compareStart(const char * str1, const char * str2);
 
 int compareEnd(const char * str1, const char * str2);

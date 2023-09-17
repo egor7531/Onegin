@@ -7,9 +7,10 @@
 
 #include "Sort.h"
 
-char * srtingReverse(const char * str, const size_t strSize)
+char * srtingReverse(const char * str)
 {
-    char strRever[strSize] = {};
+    size_t strSize = strlen(str);
+    char * strRever = (char *)calloc(strSize + 1, sizeof(char));
 
     size_t j = 0;
 
@@ -18,6 +19,8 @@ char * srtingReverse(const char * str, const size_t strSize)
         strRever[j] = str[i];
         j++;
     }
+
+    strRever[j] = '\0';
 
     return strRever;
 }
@@ -77,22 +80,27 @@ int compareStart(const char * str1, const char * str2)
 
 int compareEnd(const char * str1, const char * str2)
 {
+    return strcmp(srtingReverse(str1), srtingReverse(str2));
+}
+
+/*int compareEnd(const char * str1, const char * str2)
+{
     size_t i1 = strlen(str1);
     size_t i2 = strlen(str2);
 
     while(i1 >= 0 && i2 >= 0)
     {
-        /*if(!isalpha(str1[i1]))
+        if(!isalpha(str1[i1]))
         {
             i1--;
             continue;
-        }*/
+        }
 
-        /*if(!isalpha(str2[i2]))
+        if(!isalpha(str2[i2]))
         {
             i2--;
             continue;
-        } */
+        }
 
         if(str1[i1] != str2[i2])
         {
@@ -104,7 +112,7 @@ int compareEnd(const char * str1, const char * str2)
             return (int)str1[i1] - (int)str2[i2];
     }
 
-}
+}*/
 
 
 int Partition(char ** const text, size_t left, size_t right, const size_t nLine, int (* compare)(const char *, const char *))

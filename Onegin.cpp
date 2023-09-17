@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 
 #include "File.h"
 #include "Sort.h"
@@ -10,7 +11,8 @@ const char * ofileName = "SortedFile.txt";
 
 int main()
 {
-    printf("%d", compareEnd("", "fasdfadf"));
+    //const char * str = "(0123)";
+    //printf("%s", srtingReverse(str));
 
     FILE * fileInput = fopen(ifileName,"rb");
 
@@ -36,7 +38,7 @@ int main()
 
     FILE * fileOutput = fopen(ofileName, "wb");
 
-    QSort(text, 0, nLine - 1, nLine, compareStart);
+    QSort(text, 0, nLine - 1, nLine, compareEnd);
 
     outputFile(fileOutput, text, buf, nLine);
 
