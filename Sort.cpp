@@ -16,8 +16,11 @@ char * srtingReverse(const char * str)
 
     for(int i = strSize - 1; i >= 0 ; i--)
     {
-        strRever[j] = str[i];
-        j++;
+        //if(isalpha(str[i]))                             ???
+        {
+            strRever[j] = str[i];
+            j++;
+        }
     }
 
     strRever[j] = '\0';
@@ -73,14 +76,17 @@ void bubbleSort(char ** const text, const size_t nLine)
 
 //Qsort
 
-int compareStart(const char * str1, const char * str2)
+int compareStart(const void * str1, const void * str2)
 {
-    return strcmp(str1, str2);
+    return strcmp((const char * )str1, (const char * )str2);
 }
 
-int compareEnd(const char * str1, const char * str2)
+int compareEnd(const void * str1, const void * str2)
 {
-    return strcmp(srtingReverse(str1), srtingReverse(str2));
+    return strcmp(srtingReverse((const char * )str1), srtingReverse((const char * )str2));
+
+    //free(str1);
+    //free(str2);
 }
 
 /*int compareEnd(const char * str1, const char * str2)
@@ -115,7 +121,7 @@ int compareEnd(const char * str1, const char * str2)
 }*/
 
 
-int Partition(char ** const text, size_t left, size_t right, const size_t nLine, int (* compare)(const char *, const char *))
+int Partition(char ** const text, size_t left, size_t right, const size_t nLine, int (* compare)(const void *, const void *))
 {
 
     assert(text != NULL);
@@ -150,7 +156,7 @@ int Partition(char ** const text, size_t left, size_t right, const size_t nLine,
 
 }
 
-void QSort(char ** const text, const size_t left,const size_t right, const size_t nLine, int (* compare)(const char *, const char *))
+void QSort(char ** const text, const size_t left,const size_t right, const size_t nLine, int (* compare)(const void *, const void *))
 {
 
     assert(text != NULL);

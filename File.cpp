@@ -1,8 +1,12 @@
+#include <assert.h>
 #include <stdio.h>
 #include <sys/stat.h>
 #include <stdlib.h>
 
 #include "File.h"
+
+const char * ifileName = "Eugene Onegin.txt";
+const char * ofileName = "SortedFile.txt";
 
 size_t getfileSize(FILE * fp)
 {
@@ -28,6 +32,25 @@ void fileRead(char * buf, FILE * fin, const size_t fileSize)
 
 }
 
+char * getFileContent(size_t * fileSize)
+{
+    FILE * fileInput = fopen(ifileName,"rb");
+
+    assert(fileInput != NULL);
+
+    *fileSize = getfileSize(fileInput);
+
+    char * buf = (char *)calloc(*fileSize, sizeof(char));
+
+    assert(buf != NULL);
+
+    fileRead(buf, fileInput, *fileSize);
+
+    fclose(fileInput);
+
+    return buf;
+}
+
 size_t getCountLine(char * buf, const size_t fileSize)
 {
     size_t nLine = 1;
@@ -44,8 +67,13 @@ size_t getCountLine(char * buf, const size_t fileSize)
 
 }
 
-void writeArrayPointers(char ** text, char * buf, const size_t fileSize)
+
+char ** writeArrayPointers(char * buf, const size_t fileSize, const size_t nLine)
 {
+    char ** text = (char **)calloc(nLine, sizeof(char*));
+
+    assert(text != NULL);
+
     size_t line = 1;
 
     text[0] = buf;
@@ -60,16 +88,21 @@ void writeArrayPointers(char ** text, char * buf, const size_t fileSize)
 
     }
 
+    return text;
 }
-
-void outputFile(FILE * fout, char ** text, char * buf, const size_t nLine)
+void outputFile(char ** text, char * buf, const size_t nLine)
 {
+    FILE * fileOutput = fopen(ofileName, "wb");
+
+    assert(fileOutput  != NULL);
 
     for(size_t i = 0; i < nLine; i++)
     {
         if((int)text[i][0] > '\r')
-            fputs(text[i], fout);
+            fputs(text[i], fileOutput);
     }
+
+    fclose(fileOutput);
 
     free(buf);
     free(text);

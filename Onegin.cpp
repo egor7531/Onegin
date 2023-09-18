@@ -6,43 +6,20 @@
 #include "File.h"
 #include "Sort.h"
 
-const char * ifileName = "Eugene Onegin.txt";
-const char * ofileName = "SortedFile.txt";
 
 int main()
 {
-    //const char * str = "(0123)";
-    //printf("%s", srtingReverse(str));
+    size_t fileSize = 0;
 
-    FILE * fileInput = fopen(ifileName,"rb");
-
-    assert(fileInput != NULL);
-
-    size_t fileSize = getfileSize(fileInput);
-
-    char * buf = (char *)calloc(fileSize, sizeof(char));
-
-    assert(buf != NULL);
-
-    fileRead(buf, fileInput, fileSize);
-
-    fclose(fileInput);
+    char * buf = getFileContent(&fileSize);
 
     size_t nLine = getCountLine(buf, fileSize);
 
-    char ** text = (char **)calloc(nLine, sizeof(char*));
+    char ** text = writeArrayPointers(buf, fileSize, nLine);
 
-    assert(text != NULL);
+    QSort(text, 0, nLine - 1, nLine, compareStart);
 
-    writeArrayPointers(text, buf, fileSize);
-
-    FILE * fileOutput = fopen(ofileName, "wb");
-
-    QSort(text, 0, nLine - 1, nLine, compareEnd);
-
-    outputFile(fileOutput, text, buf, nLine);
-
-    fclose(fileOutput);
+    outputFile(text, buf, nLine);
 
     return 0;
 }
