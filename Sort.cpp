@@ -15,27 +15,20 @@ char * srtingReverse(const char * str)
     size_t j = 0;
 
     for(int i = strSize - 1; i >= 0 ; i--)
-    {
-        //if(isalpha(str[i]))                             ???
-        {
-            strRever[j] = str[i];
-            j++;
-        }
-    }
+        strRever[j++] = str[i];
 
     strRever[j] = '\0';
 
     return strRever;
 }
 
-void swapString(char ** const a, char ** const b)
+void mySwap(void * a, void * b, const size_t sizeValue)
 {
-    assert(a != NULL);
-    assert(b != NULL);
+    void * tmp = malloc(sizeValue);
 
-    char * const tmp = *a;
-    *a = *b;
-    *b = tmp;
+    memmove(tmp, a, sizeValue);
+    memmove(a, b, sizeValue);
+    memmove(b, tmp, sizeValue);
 
 }
 
@@ -60,7 +53,7 @@ void bubbleSort(char ** const text, const size_t nLine)
 
             if(strcmp(text[i], text[i+1]) > 0)
             {
-                swapString(&text[i], &text[i+1]);
+                mySwap(&text[i], &text[i+1], sizeof(text[i]));
 
                 beSwap = true;
             }
@@ -85,43 +78,10 @@ int compareEnd(const void * str1, const void * str2)
 {
     return strcmp(srtingReverse((const char * )str1), srtingReverse((const char * )str2));
 
-    //free(str1);
-    //free(str2);
 }
 
-/*int compareEnd(const char * str1, const char * str2)
-{
-    size_t i1 = strlen(str1);
-    size_t i2 = strlen(str2);
 
-    while(i1 >= 0 && i2 >= 0)
-    {
-        if(!isalpha(str1[i1]))
-        {
-            i1--;
-            continue;
-        }
-
-        if(!isalpha(str2[i2]))
-        {
-            i2--;
-            continue;
-        }
-
-        if(str1[i1] != str2[i2])
-        {
-            i1--;
-            i2--;
-            continue;
-        }
-        else
-            return (int)str1[i1] - (int)str2[i2];
-    }
-
-}*/
-
-
-int Partition(char ** const text, size_t left, size_t right, const size_t nLine, int (* compare)(const void *, const void *))
+int Partition(void * text, size_t left, size_t right, const size_t nLine, const size_t sizeType, int (* compare)(const void *, const void *))
 {
 
     assert(text != NULL);
@@ -132,14 +92,14 @@ int Partition(char ** const text, size_t left, size_t right, const size_t nLine,
 
     while(left < right)
     {
-
+        assert(0 <= mid && mid <= nLine);
         assert(right < nLine);
         assert(left < nLine);
 
-        while(compare(text[left], text[mid]) < 0 && left != mid)
+        while(compare((char *)text + left, (char *)text + mid) < 0 && left != mid)
             left++;
 
-        while(compare(text[right], text[mid]) >= 0 && mid != right)
+        while(compare((char *)text + right, (char *)text + mid) >= 0 && mid != right)
             right--;
 
         if(mid == right)
@@ -148,7 +108,7 @@ int Partition(char ** const text, size_t left, size_t right, const size_t nLine,
         else if(mid == left)
             mid = right;
 
-        swapString(&text[left], &text[right]);
+        mySwap((char *)text + left, (char *)text + right, sizeType);
 
     }
 
@@ -156,7 +116,7 @@ int Partition(char ** const text, size_t left, size_t right, const size_t nLine,
 
 }
 
-void QSort(char ** const text, const size_t left,const size_t right, const size_t nLine, int (* compare)(const void *, const void *))
+void QSort(void * text, const size_t left,const size_t right, const size_t nLine, const size_t sizeType, int (* compare)(const void *, const void *))
 {
 
     assert(text != NULL);
@@ -164,16 +124,16 @@ void QSort(char ** const text, const size_t left,const size_t right, const size_
     assert(right < nLine);
     assert(left < nLine);
 
-    int mid = Partition(text, left, right, nLine, compare);
+    int mid = Partition(text, left, right, nLine, sizeType, compare);
 
     if(mid - 1 > left)
 
-        QSort(text, left, mid - 1, nLine, compare);
+        QSort(text, left, mid - 1, nLine, sizeType, compare);
 
 
     if(mid + 1 < right)
 
-        QSort(text, mid + 1, right, nLine, compare);
+        QSort(text, mid + 1, right, nLine, sizeType, compare);
 
 }
 

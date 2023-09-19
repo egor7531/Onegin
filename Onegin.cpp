@@ -1,7 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-#include <string.h>
 
 #include "File.h"
 #include "Sort.h"
@@ -17,7 +14,7 @@ int main()
 
     char ** text = writeArrayPointers(buf, fileSize, nLine);
 
-    QSort(text, 0, nLine - 1, nLine, compareStart);
+    QSort(text, 0, nLine - 1, nLine, sizeof(text[0]), compareEnd);
 
     outputFile(text, buf, nLine);
 
