@@ -2,3 +2,9 @@
 Onegin.cpp.save
 *.save
 Onegin.cpp.save
+*.exe
+OneginMini.txt
+Sort.o
+Sort.o
+*.o
+*.save

@@ -30,19 +30,19 @@ void mySwap(void * a, void * b, const size_t sizeValue)
     memmove(a, b, sizeValue);
     memmove(b, tmp, sizeValue);
 
+    free(tmp);
+
 }
 
 //Bubble Sort
 
-void bubbleSort(char ** const text, const size_t nLine)
+void bubbleSort(void * text, const size_t nLine, const size_t sizeValue, int (* compare)(const void *, const void *))
 {
 
     assert(text != NULL);
 
-
     for(size_t nPass = 0; nPass < nLine - 1; nPass++)
     {
-
         bool beSwap = false;
 
         for(size_t i = 0; i < nLine - nPass - 1; i++)
@@ -51,9 +51,9 @@ void bubbleSort(char ** const text, const size_t nLine)
             assert(i <= nLine);
             assert(i + 1 <= nLine);
 
-            if(strcmp(text[i], text[i+1]) > 0)
+            if(compare((char *)text + sizeValue*i, (char *)text + sizeValue*(i+1)) > 0)
             {
-                mySwap(&text[i], &text[i+1], sizeof(text[i]));
+                mySwap((char *)text + sizeValue*i, (char *)text + sizeValue*(i+1), sizeValue);
 
                 beSwap = true;
             }
@@ -71,12 +71,12 @@ void bubbleSort(char ** const text, const size_t nLine)
 
 int compareStart(const void * str1, const void * str2)
 {
-    return strcmp((const char * )str1, (const char * )str2);
+    return strcmp(*(const char ** )str1, *(const char **)str2);
 }
 
 int compareEnd(const void * str1, const void * str2)
 {
-    return strcmp(srtingReverse((const char * )str1), srtingReverse((const char * )str2));
+    return strcmp(srtingReverse(*(const char ** )str1), srtingReverse(*(const char ** )str2));
 
 }
 
@@ -96,10 +96,10 @@ int Partition(void * text, size_t left, size_t right, const size_t nLine, const 
         assert(right < nLine);
         assert(left < nLine);
 
-        while(compare((char *)text + left, (char *)text + mid) < 0 && left != mid)
+        while(compare((char *)text + left * sizeType, (char *)text + mid * sizeType) < 0 && left != mid)
             left++;
 
-        while(compare((char *)text + right, (char *)text + mid) >= 0 && mid != right)
+        while(compare((char *)text + right * sizeType, (char *)text + mid * sizeType) >= 0 && mid != right)
             right--;
 
         if(mid == right)
@@ -108,7 +108,7 @@ int Partition(void * text, size_t left, size_t right, const size_t nLine, const 
         else if(mid == left)
             mid = right;
 
-        mySwap((char *)text + left, (char *)text + right, sizeType);
+        mySwap((char *)text + left * sizeType, (char *)text + right * sizeType, sizeType);
 
     }
 
@@ -116,7 +116,7 @@ int Partition(void * text, size_t left, size_t right, const size_t nLine, const 
 
 }
 
-void QSort(void * text, const size_t left,const size_t right, const size_t nLine, const size_t sizeType, int (* compare)(const void *, const void *))
+void QSort(void * text, const size_t left, const size_t right, const size_t nLine, const size_t sizeType, int (* compare)(const void *, const void *))
 {
 
     assert(text != NULL);

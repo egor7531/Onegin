@@ -14,6 +14,8 @@ int main()
 
     char ** text = writeArrayPointers(buf, fileSize, nLine);
 
+    //bubbleSort(text, nLine, sizeof(text[0]), compareStart);
+
     QSort(text, 0, nLine - 1, nLine, sizeof(text[0]), compareEnd);
 
     outputFile(text, buf, nLine);
